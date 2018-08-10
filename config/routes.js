@@ -2,10 +2,10 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const axios = require('axios');
 const server = express.Router();
-const { authenticate } = require('./middlewares');
+const {authenticate } = require('./middlewares');
 const db = require('../database/dbConfig');
-
-
+const jwt = require('jsonwebtoken');
+const jwtKey = require('../_secrets/keys').jwtKey;
 
 module.exports = server => {
   server.post('/api/register', register);
@@ -35,11 +35,9 @@ if(!req.body.username || !req.body.password){
                 .where('id', ids[0])
                 .first()
                 .then(user => {
-		let userCreated = {};
-	        userCreated={id: user.id, username: user.username};
-                //const token = generateToken(user);
+                const token = generateToken(user);
 
-                res.status(200).json(userCreated);
+                res.send(token);
                 })
         })
 
@@ -56,7 +54,44 @@ if(!req.body.username || !req.body.password){
 
 function login(req, res) {
   // implement user login
+
+const credentials = req.body;
+
+  db('users')
+    .where({ username: credentials.username })
+    .first()
+    .then(function(user) {
+      if (user && bcrypt.compareSync(credentials.password, user.password)) {
+
+        const token = generateToken(user);
+
+        //token attached to the response
+
+	res.send(token);
+      } else {
+        return res.status(401).json({ error: 'Incorrect credentials' });
+      }
+    })
+    .catch(function(error) {
+      res.status(500).json({ error });
+    });
 }
+
+const secret = jwtKey;                
+	
+function generateToken(user) {
+  const payload = {
+          sub: user.id,
+  };
+
+  const options = {
+    expiresIn: '2h',
+    jwtid: 'u97487291555',
+  };
+
+  return jwt.sign(payload, secret, options);
+}
+
 
 function getJokes(req, res) {
   axios
