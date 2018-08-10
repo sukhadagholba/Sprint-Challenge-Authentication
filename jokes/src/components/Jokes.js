@@ -50,7 +50,7 @@ render() {
                 <Link to="/">Login</Link><br /><br />
                 </div>) :(
       <div><h2>Jokes</h2>
-        {this.state.jokes.map(joke => {return <div key={Math.random()}><p>{joke.setup}</p><p>{joke.punchline}</p></div>}
+        {this.state.jokes.map(joke => {return <div key={Math.random()}><p className="text-style">{joke.setup}</p><p className="punchline-style">{joke.punchline}</p></div>}
         )}
 
         <button onClick={this.logoutHandler}>Logout</button>

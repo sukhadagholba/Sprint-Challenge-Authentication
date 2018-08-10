@@ -8,9 +8,9 @@ class Home extends React.Component {
     return (
       <div>
         <div>
-                <h1>Welcome</h1><br />
-                <Link to="/api/register">Register</Link><br /><br />
-                <Link to="/api/login">Login</Link>
+                <h1 className="punchline-style">Welcome</h1><br />
+                <Link className="link-style"  to="/api/register">Register</Link><br /><br />
+                <Link className="link-style" to="/api/login">Login</Link>
            </div>
       </div>
     );
